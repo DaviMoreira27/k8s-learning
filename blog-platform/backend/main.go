@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -25,7 +26,7 @@ var (
 func main() {
 	http.HandleFunc("/health", withCORS(healthHandler))
 	http.HandleFunc("/posts", withCORS(postsHandler))
-	http.HandleFunc("/posts/", withCORS(markProcessedHandler))
+	http.HandleFunc("/posts/processed/", withCORS(markProcessedHandler))
 
 	log.Println("Server running on port 8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
@@ -101,9 +102,9 @@ func createPost(w http.ResponseWriter, r *http.Request) {
 func listPosts(w http.ResponseWriter, r *http.Request) {
 	mutex.Lock()
 	defer mutex.Unlock()
+	var result []Post
 
 	if r.URL.Query().Get("unprocessed") == "true" {
-		var result []Post
 		for _, p := range posts {
 			if !p.Processed {
 				result = append(result, p)
@@ -113,7 +114,13 @@ func listPosts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	json.NewEncoder(w).Encode(posts)
+	for _, p := range posts {
+		if p.Processed {
+			fmt.Println(p)
+			result = append(result, p)
+		}
+	}
+	json.NewEncoder(w).Encode(result)
 }
 
 func markProcessedHandler(w http.ResponseWriter, r *http.Request) {
@@ -122,7 +129,12 @@ func markProcessedHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	idStr := strings.TrimPrefix(r.URL.Path, "/posts/")
+	idStr := strings.TrimPrefix(r.URL.Path, "/posts/processed/")
+	if idStr == "" {
+		http.Error(w, "Missing ID", http.StatusBadRequest)
+		return
+	}
+
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		http.Error(w, "Invalid ID", http.StatusBadRequest)
@@ -135,6 +147,8 @@ func markProcessedHandler(w http.ResponseWriter, r *http.Request) {
 	for i := range posts {
 		if posts[i].ID == id {
 			posts[i].Processed = true
+
+			w.Header().Set("Content-Type", "application/json")
 			json.NewEncoder(w).Encode(posts[i])
 			return
 		}

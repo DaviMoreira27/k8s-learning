@@ -81,8 +81,9 @@ async function loadPosts() {
         const div = document.createElement("div");
         div.className = "post";
         div.innerHTML = `
-            <strong>${post.title}</strong>
-            <p>${post.text}</p>
+            <strong>Title: ${post.title}</strong>
+            <p>Text: ${post.text}</p>
+            <p>Processed: ${post.processed}</p>
         `;
         container.appendChild(div);
     });
@@ -107,6 +108,10 @@ document.getElementById("postForm").addEventListener("submit", async (e) => {
 
     loadPosts();
 });
+
+setTimeout(() => {
+  loadPosts();
+}, 5000)
 
 checkHealth();
 loadPosts();
