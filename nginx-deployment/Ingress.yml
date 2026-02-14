@@ -2,8 +2,9 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: nginx-ingress
+  namespace: application-namespace
 spec:
-  ingressClassName: nginx-ingress-test
+  ingressClassName: nginx
   rules:
   - http:
       paths:
