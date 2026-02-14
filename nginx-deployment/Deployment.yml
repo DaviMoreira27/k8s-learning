@@ -1,0 +1,31 @@
+# Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-app
+  namespace: application-namespace
+  labels:
+    app: nginx
+    type: server-applications
+spec:
+  replicas: 3
+  # Its not directly a ReplicaSet, but for each replica we will repeat the same config
+  selector:
+    matchLabels:
+      app: nginx # The .spec.selector field defines how the created ReplicaSet finds which Pods to manage.
+  # Pod
+  template: # Defines the Pods itself, this is the piece of the manifest handles the Pod shape
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:latest
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
