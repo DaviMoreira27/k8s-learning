@@ -1,0 +1,52 @@
+apiVersion: apps/v1                    # Kubernetes API version for StatefulSet
+kind: StatefulSet                      # Declares this resource as a StatefulSet
+metadata:
+  name: postgres                       # Name of the StatefulSet
+spec:
+  serviceName: postgres                # Must match the Headless Service name (network identity)
+  replicas: 1                          # Number of PostgreSQL instances
+  selector:
+    matchLabels:
+      app: postgres                    # Label selector to identify managed pods
+  template:
+    metadata:
+      labels:
+        app: postgres                  # Labels applied to pods (must match selector)
+    spec:
+      containers:
+        - name: postgres               # Container name
+          image: postgres:16           # Official PostgreSQL Docker image version
+          ports:
+            - containerPort: 5432      # Port PostgreSQL listens on inside the container
+              name: postgres           # Port name for clarity
+          env:
+            - name: POSTGRES_DB        # Environment variable to create default database
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret # Name of the Secret resource
+                  key: database        # Key inside the Secret
+
+            - name: POSTGRES_USER      # Environment variable to create database user
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret # Name of the Secret resource
+                  key: username        # Key inside the Secret
+
+            - name: POSTGRES_PASSWORD  # Environment variable for user password
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret # Name of the Secret resource
+                  key: password        # Key inside the Secret
+
+          volumeMounts:
+            - name: postgres-data      # Name of the volume to mount
+              mountPath: /var/lib/postgresql/data  # PostgreSQL data directory inside container
+
+  volumeClaimTemplates:
+    - metadata:
+        name: postgres-data            # PVC name (must match volumeMount name)
+      spec:
+        accessModes: ["ReadWriteOnce"] # Volume can be mounted by one node at a time
+        resources:
+          requests:
+            storage: 10Gi              # Requested storage size

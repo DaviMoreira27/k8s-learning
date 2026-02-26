@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Deployment
+metadata:
+  name: redis-deployment
+  labels:
+    app: blog-backoffice
+    type: cache
+spec:
+   replicas: 1
+   selector:
+     matchLabels:
+       type: cache
+   template:
+      metadata:
+        labels:
+          type: cache
+      spec:
+        containers:
+           - name: cache
+             image: redis:8.2.4
+             ports:
+               - containerPort: 6379

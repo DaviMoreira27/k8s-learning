@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+  labels:
+    app: blog-frontoffice
+    type: frontend
+spec:
+   replicas: 2
+   selector:
+     matchLabels:
+       type: frontend
+   template:
+      metadata:
+        labels:
+          type: frontend
+      spec:
+        containers:
+           - name: frontend
+             image: davimoreira27/blog-platform:frontend-v1.0
+             ports:
+               - containerPort: 80

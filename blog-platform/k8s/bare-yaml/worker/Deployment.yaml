@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker-deployment
+  labels:
+    app: blog-backoffice
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      type: worker
+  template:
+    metadata:
+      labels:
+        type: worker
+    spec:
+      containers:
+        - name: worker
+          image: davimoreira27/blog-platform:worker-v1.0
+          ports:
+            - containerPort: 8081

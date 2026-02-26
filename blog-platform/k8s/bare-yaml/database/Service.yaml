@@ -1,0 +1,13 @@
+# The headleass service will provide a stable network identify for this to be reached even if all goes down
+
+apiVersion: v1                         # Kubernetes API version for Service resource
+kind: Service                          # Declares this resource as a Service
+metadata:
+  name: postgres                       # Name of the service (used for DNS)
+spec:
+  clusterIP: None                      # Headless service (no load balancing IP, direct pod DNS)
+  selector:
+    app: postgres                      # Selects pods with label app=postgres
+  ports:
+    - port: 5432                       # Service port exposed inside the cluster
+      name: postgres                   # Port name (useful for discovery and clarity)

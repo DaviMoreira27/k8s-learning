@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+spec:
+  type: NodePort # Exposes the service outside of the cluster, given the cluster IP and this port, the kube-proxy runs on each node
+  # and routes the request the correct pod inside the cluster
+  selector:
+    type: frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 81
