@@ -5,7 +5,7 @@ metadata:
   labels:
     app: blog-backoffice
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       type: backend
@@ -20,6 +20,12 @@ spec:
           ports:
             - containerPort: 8080
           env:
+            - name: DATABASE_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: host
+
             - name: DATABASE_NAME
               valueFrom:
                 secretKeyRef:

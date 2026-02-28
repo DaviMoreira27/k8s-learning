@@ -11,4 +11,6 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 80
-      nodePort: 81
+      # nodePort must be in range 30000-32767, kube-proxy binds this port directly on the host OS network stack, not inside an isolated namespace
+      # nodePort: 81
+      nodePort: 30080

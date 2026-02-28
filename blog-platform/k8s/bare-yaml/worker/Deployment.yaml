@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
         - name: worker
-          image: davimoreira27/blog-platform:worker-v1.0
+          image: davimoreira27/blog-platform:worker-v1.1
           ports:
             - containerPort: 8081

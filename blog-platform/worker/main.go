@@ -14,7 +14,7 @@ type Post struct {
 	Text  string `json:"text"`
 }
 
-const apiURL = "http://localhost:8080"
+const apiURL = "http://backend-service:8080"
 
 func main() {
 	log.Println("Worker started")

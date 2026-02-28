@@ -53,9 +53,7 @@
 <div id="posts"></div>
 
 <script>
-const API_BASE = "http://localhost:8080";
-// If API is behind same Ingress, leave empty.
-// If different service, set like: "http://api-service:8080"
+const API_BASE = "http://192.168.49.2:30081";
 
 async function checkHealth() {
     try {

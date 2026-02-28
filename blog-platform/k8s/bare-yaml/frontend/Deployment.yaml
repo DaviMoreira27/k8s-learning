@@ -17,6 +17,6 @@ spec:
       spec:
         containers:
            - name: frontend
-             image: davimoreira27/blog-platform:frontend-v1.0
+             image: davimoreira27/blog-platform:frontend-v1.2
              ports:
                - containerPort: 80
